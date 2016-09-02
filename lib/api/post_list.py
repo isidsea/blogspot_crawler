@@ -38,20 +38,7 @@ class PostListAPI(API):
 					# print(bson.json_util.dumps(res,indent=4))
 
 					for item in res["items"]:
-						content  = BeautifulSoup(item["content"], "html5lib")
-						content  = content.text
-						document = {
-							   "_insert_time" : arrow.utcnow().datetime,
-							       "_country" : blog["country"],
-							        "_origin" : blog["domain"],
-							"pubslished_date" : arrow.get(item["published"]).datetime,
-							      "permalink" : item["url"],
-							          "title" : item["title"],
-							        "content" : content,
-							      "author_id" : item["author"]["id"],
-							    "author_name" : item["author"]["displayName"]
-						}
-						callback(document=document)
+						callback(document=self.generate_document(blog,item))
 					# You need to make sure that the next request is not retrying current request.
 					# If you need to retry, please do not go to next page
 					has_next = "nextPageToken" in res
@@ -68,3 +55,19 @@ class PostListAPI(API):
 			print(fmtstr("[post_list_api][error] Duplicate document!","red"))
 		except EmptyPost as ex:
 			print(fmtstr("[post_list_api][error] %s" % ex, "red"))
+
+	def generate_document(self, blog=None, item=None):
+		content  = BeautifulSoup(item["content"], "html5lib")
+		content  = content.text
+		document = {}
+		document.update({"_insert_time":arrow.utcnow().datetime})
+		document.update({"_country":blog["country"]})
+		document.update({"origin":blog["domain"]})
+		document.update({"published_date":arrow.get(item["published"]).datetime})
+		document.update({"permalink":item["url"]})
+		document.update({"title":item["title"]})
+		document.update({"content":content})
+		document.update({"author_id":item["author"]["id"]})
+		document.update({"author_name":item["author"]["displayName"]})
+		document.update({"converted":False})
+		return document

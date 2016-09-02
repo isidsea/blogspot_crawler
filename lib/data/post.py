@@ -12,3 +12,7 @@ class PostData(Data):
 		db = Database.get_db()
 		db.data.insert_one(document)
 		print("[post_list_callback][debug] Inserted one document!")
+
+	def get_not_converted(self):
+		db = Database.get_db()
+		return [doc for doc in db.data.find({"$or":[{"converted":None},{"converted":False}]})]

@@ -10,10 +10,11 @@ class ConverterInterface:
 		pass
 
 	@classmethod
-	def multiple_convert_and_save(self):
-		documents      = Data.get_not_converted()
+	def multiple_convert_and_save(self, data=None):
+		documents      = Data.get_not_converted() if data is None else data.get_not_converted()
 		mention_db     = MentionDB()
 		author_info_db = AuthorInfoDB()
+		print("[convert][debug] Converting %s documents" % len(documents))
 		for document in documents:
 			try:
 				converted_document = ConverterEngine.convert(document).to_dict()
