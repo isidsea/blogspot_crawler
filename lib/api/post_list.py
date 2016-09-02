@@ -42,7 +42,7 @@ class PostListAPI(API):
 						content  = content.text
 						document = {
 							   "_insert_time" : arrow.utcnow().datetime,
-							       "_country" : None,
+							       "_country" : blog["country"],
 							        "_origin" : blog["domain"],
 							"pubslished_date" : arrow.get(item["published"]).datetime,
 							      "permalink" : item["url"],

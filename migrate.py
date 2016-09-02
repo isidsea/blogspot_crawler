@@ -20,13 +20,20 @@ if __name__ == "__main__":
 	file = open(file,"r")
 	for url in file.readlines():
 		try:
-			url = url.replace("\n","")
-			url = NetworkTools.full_url(url)
+			basic_url = url.replace("\n","")
+			url       = NetworkTools.full_url(basic_url)
 
 			print("[migrate][debug] URL: %s" % url)
 			get_by_url = APIFactory.get_api(APIFactory.GET_BY_URL)
 			res        = get_by_url.execute(url=url)
-			
+
+			# Getting country
+			central_db = pymongo.MongoClient("mongodb://alex:07081984@220.100.163.138/isid?authSource=admin")
+			central_db = central_db["isid"]
+			country    = central_db.mention.find_one({"SourceName":{"$regex":basic_url}})
+			country    = country["Country"] if country is not None else None
+			print("[migrate][debug] Found country: %s" % country)
+
 			document = {
 				          "id" : res["id"],
 				        "name" : res["name"],
@@ -35,6 +42,7 @@ if __name__ == "__main__":
 				      "update" : arrow.get(res["updated"]).datetime,
 				         "url" : res["url"],
 				      "domain" : NetworkTools.get_domain(res["url"]),
+				     "country" : country,
 			    "_insert_time" : arrow.utcnow().datetime,
 			       "is_active" : True
 			}
