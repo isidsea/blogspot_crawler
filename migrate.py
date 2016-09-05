@@ -34,21 +34,21 @@ if __name__ == "__main__":
 			country    = country["Country"] if country is not None else None
 			print("[migrate][debug] Found country: %s" % country)
 
-			if country is not None:
-				document = {
-					          "id" : res["id"],
-					        "name" : res["name"],
-					 "description" : res["description"],
-					     "created" : arrow.get(res["published"]).datetime,
-					     "updated" : arrow.get(res["updated"]).datetime,
-					         "url" : res["url"],
-					      "domain" : NetworkTools.get_domain(res["url"], with_scheme=False),
-					     "country" : country,
-				    "_insert_time" : arrow.utcnow().datetime,
-				       "is_active" : True
-				}
-				db = Database.get_db()
-				db.blog_list.insert_one(document)
+			if country is None: raise CannotFindBlog("Country is null")
+			document = {
+				          "id" : res["id"],
+				        "name" : res["name"],
+				 "description" : res["description"],
+				     "created" : arrow.get(res["published"]).datetime,
+				     "updated" : arrow.get(res["updated"]).datetime,
+				         "url" : res["url"],
+				      "domain" : NetworkTools.get_domain(res["url"], with_scheme=False),
+				     "country" : country,
+			    "_insert_time" : arrow.utcnow().datetime,
+			       "is_active" : True
+			}
+			db = Database.get_db()
+			db.blog_list.insert_one(document)
 		except CannotFindBlog as ex:
 			print(fmtstr("[migrate][debug] %s" % ex,"red"))
 		except pymongo.errors.DuplicateKeyError:
