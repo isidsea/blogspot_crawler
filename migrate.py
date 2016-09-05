@@ -39,7 +39,7 @@ if __name__ == "__main__":
 				        "name" : res["name"],
 				 "description" : res["description"],
 				     "created" : arrow.get(res["published"]).datetime,
-				      "update" : arrow.get(res["updated"]).datetime,
+				     "updated" : arrow.get(res["updated"]).datetime,
 				         "url" : res["url"],
 				      "domain" : NetworkTools.get_domain(res["url"], with_scheme=False),
 				     "country" : country,
