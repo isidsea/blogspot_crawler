@@ -13,8 +13,11 @@ class NetworkTools:
 		return url
 
 	@classmethod
-	def get_domain(self, url=None):
+	def get_domain(self, url=None, with_scheme=True):
 		assert url is not None, "url is not defined."
 		parsed_uri = urlparse(url)
-		domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+		if with_scheme:
+			domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+		else:
+			domain = "{uri.netloc}".format(uri=parsed_uri)
 		return domain

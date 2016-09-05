@@ -35,7 +35,6 @@ class PostListAPI(API):
 
 					response_validator = ValidatorFactory.get_validator(ValidatorFactory.RESPONSE)
 					response_validator.validate(res)
-					# print(bson.json_util.dumps(res,indent=4))
 
 					for item in res["items"]:
 						callback(document=self.generate_document(blog,item))

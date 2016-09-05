@@ -41,7 +41,7 @@ if __name__ == "__main__":
 				     "created" : arrow.get(res["published"]).datetime,
 				      "update" : arrow.get(res["updated"]).datetime,
 				         "url" : res["url"],
-				      "domain" : NetworkTools.get_domain(res["url"]),
+				      "domain" : NetworkTools.get_domain(res["url"], with_scheme=False),
 				     "country" : country,
 			    "_insert_time" : arrow.utcnow().datetime,
 			       "is_active" : True
