@@ -34,7 +34,7 @@ if __name__ == "__main__":
 			country    = country["Country"] if country is not None else None
 			print("[migrate][debug] Found country: %s" % country)
 
-			if country not None:
+			if country is not None:
 				document = {
 					          "id" : res["id"],
 					        "name" : res["name"],
