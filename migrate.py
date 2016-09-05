@@ -47,8 +47,8 @@ if __name__ == "__main__":
 				    "_insert_time" : arrow.utcnow().datetime,
 				       "is_active" : True
 				}
-			db = Database.get_db()
-			db.blog_list.insert_one(document)
+				db = Database.get_db()
+				db.blog_list.insert_one(document)
 		except CannotFindBlog as ex:
 			print(fmtstr("[migrate][debug] %s" % ex,"red"))
 		except pymongo.errors.DuplicateKeyError:
