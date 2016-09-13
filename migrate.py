@@ -29,6 +29,7 @@ if __name__ == "__main__":
 			url     = url.replace(" ","")
 			url     = url.replace("#","")
 			url     = url.replace("-","")
+			url     = url.replace("%","")
 			url     = NetworkTools.full_url(url)
 			# basic_url = url.replace("\n","")
 
