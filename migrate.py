@@ -26,19 +26,15 @@ if __name__ == "__main__":
 			url     = line[2]
 			url     = url.replace('"',"")
 			url     = url.replace("'","")
+			url     = url.replace(" ","")
+			url     = url.replace("#","")
+			url     = url.replace("-","")
 			url     = NetworkTools.full_url(url)
 			# basic_url = url.replace("\n","")
 
 			print("[migrate][debug] URL: %s" % url.encode("utf8"))
 			get_by_url = APIFactory.get_api(APIFactory.GET_BY_URL)
 			res        = get_by_url.execute(url=url)
-
-			# Getting country
-			# central_db = pymongo.MongoClient("mongodb://alex:07081984@220.100.163.138/isid?authSource=admin")
-			# central_db = central_db["isid"]
-			# country    = central_db.mention.find_one({"SourceName":{"$regex":basic_url}})
-			# country    = country["Country"] if country is not None else None
-			# print("[migrate][debug] Found country: %s" % country)
 
 			if country is None: raise CannotFindBlog("Country is null")
 			document = {
