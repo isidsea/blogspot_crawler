@@ -24,6 +24,8 @@ if __name__ == "__main__":
 			line    = line.split(",")
 			country = line[0]
 			url     = line[2]
+			url     = url.replace('"',"")
+			url     = url.replace("'","")
 			url     = NetworkTools.full_url(url)
 			# basic_url = url.replace("\n","")
 
