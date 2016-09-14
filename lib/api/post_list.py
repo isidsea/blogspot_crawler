@@ -50,6 +50,8 @@ class PostListAPI(API):
 					print(fmtstr("[post_list_api][error] %s" % ex, "red"))
 				except APIKeyLimitExceed as ex:
 					print(fmtstr("[post_list_api][error] %s" % ex, "red"))
+				except CannotFindBlog as ex:
+					print(fmtstr("[post_list_api][error] %s" % ex, "red"))
 		except pymongo.errors.DuplicateKeyError:
 			print(fmtstr("[post_list_api][error] Duplicate document!","red"))
 		except EmptyPost as ex:
