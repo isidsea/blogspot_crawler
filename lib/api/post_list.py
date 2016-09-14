@@ -1,6 +1,6 @@
 from .        			 import API, Key
 from ..validator.factory import ValidatorFactory
-from ..exceptions        import APIBackendError, APIKeyLimitExceed, EmptyPost
+from ..exceptions        import APIBackendError, APIKeyLimitExceed, EmptyPost, CannotFindBlog
 from bs4      			 import BeautifulSoup
 from curtsies 			 import fmtstr
 import pymongo
