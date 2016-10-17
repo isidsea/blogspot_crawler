@@ -17,7 +17,7 @@ class Engine(object):
 		new_document.MentionId                    = hashlib.sha256(document["permalink"].encode("utf-8")).hexdigest() 
 		new_document.MentionText                  = document["content"]
 		new_document.MentionMiscInfo			  = ""
-		new_document.MentionType                  = document["origin"] 
+		new_document.MentionType                  = document["origin"]
 		new_document.MentionDirectLink            = document["permalink"]
 		new_document.MentionCreatedDate           = document["published_date"]
 		new_document.MentionCreatedDateISO        = document["published_date"]
