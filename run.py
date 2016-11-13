@@ -1,5 +1,5 @@
-from lib.data.factory import DataFactory
-from lib.api.factory  import APIFactory
+from lib.factory.data import DataFactory
+from lib.factory.api  import APIFactory
 from lib.database     import Database
 from multiprocessing  import Pool
 
@@ -12,7 +12,3 @@ if __name__ == "__main__":
 	with Pool(5) as pool:
 		post_list = APIFactory.get_api(APIFactory.POST_LIST)
 		pool.map(post_list.execute, blogs)
-
-	# post_list = APIFactory.get_api(APIFactory.POST_LIST)
-	# for blog in blogs:
-	# 	post_list.execute(blog, post_data.post_list_callback)

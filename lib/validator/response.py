@@ -1,4 +1,4 @@
-from . import Validator
+from . 			  import Validator
 from ..exceptions import CannotFindBlog, APIBackendError, APIKeyLimitExceed, EmptyPost
 
 class ResponseValidator(Validator):

@@ -1,14 +1,21 @@
 import pymongo
 
 class Database:
-	def __init__(self):
-		pass
+	def __init__(self, **kwargs):
+		self.conn = None
+		self.db   = None
 
-	@classmethod
+		self.host = kwargs.get("host","mongo")
+		self.name = kwargs.get("name","blogspot_crawler")
+
 	def get_db(self):
-		db = pymongo.MongoClient("mongodb://mongo:27017")
-		db = db["blogspot_crawler"]
+		self.conn = pymongo.MongoClient("mongodb://%s:27017" % (self.host))
+		self.db   = conn[self.name]
 
-		db.blog_list.create_index([("id", pymongo.ASCENDING)], unique=True)
-		db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True)
-		return db
+		self.db.blog_list.create_index([("id", pymongo.ASCENDING)], unique=True, background=True)
+		self.db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True, background=True)
+		return self.db
+
+	def close(self):
+		if self.conn is not None:
+			self.conn.close()
