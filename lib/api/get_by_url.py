@@ -1,6 +1,7 @@
-from .              	 import API, Key
+from .              	 import API
+from ..manager.key       import KeyManager
 from ..exceptions   	 import CannotFindBlog, APIKeyLimitExceed, EmptyPost, APIBackendError
-from ..validator.factory import ValidatorFactory
+from ..factory.validator import ValidatorFactory
 import requests
 import copy
 
@@ -13,10 +14,11 @@ class GetByURLAPI(API):
 		
 		assert url is not None, "url is not defined."
 
-		try_again = True
+		key_manager = KeyManager(holder="Migration")
+		try_again   = True
 		while try_again:
 			try:
-				key = Key.get_key()
+				key = key_manager.selected_key
 				res = requests.get("%s?url=%s&key=%s" % (self.end_point, url, Key.get_key()))
 				res = res.json()
 
@@ -27,7 +29,7 @@ class GetByURLAPI(API):
 					raise CannotFindBlog("Cannot find %s's ID" % url)
 				try_again = False # Set try_again == False when everything is good
 			except APIKeyLimitExceed:
-				pass
+				key_manager.next_key()
 			except APIBackendError:
 				pass
 			except EmptyPost:

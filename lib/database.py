@@ -10,10 +10,11 @@ class Database:
 
 	def get_db(self):
 		self.conn = pymongo.MongoClient("mongodb://%s:27017" % (self.host))
-		self.db   = conn[self.name]
+		self.db   = self.conn[self.name]
 
 		self.db.blog_list.create_index([("id", pymongo.ASCENDING)], unique=True, background=True)
 		self.db.data.create_index([("permalink", pymongo.ASCENDING)], unique=True, background=True)
+		self.db.data.create_index("converted", background=True)
 		return self.db
 
 	def close(self):

@@ -5,7 +5,7 @@
 from lib.exceptions    import CannotFindFile, CannotFindBlog, EmptyPost
 from lib.network_tools import NetworkTools
 from lib.database      import Database
-from lib.api.factory   import APIFactory
+from lib.factory.api   import APIFactory
 from curtsies          import fmtstr
 from multiprocessing   import Pool
 import os

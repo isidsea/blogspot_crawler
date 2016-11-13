@@ -1,8 +1,10 @@
-from .        			 import API, Key
-from ..validator.factory import ValidatorFactory
-from ..exceptions        import APIBackendError, APIKeyLimitExceed, EmptyPost, CannotFindBlog
+from .        			 import API
+from ..manager.key       import KeyManager
+from ..factory.validator import ValidatorFactory
+from ..exceptions        import APIBackendError, APIKeyLimitExceed, EmptyPost, CannotFindBlog, CannotFindAPIKey
 from bs4      			 import BeautifulSoup
 from curtsies 			 import fmtstr
+import multiprocessing
 import pymongo
 import requests
 import arrow
@@ -14,24 +16,26 @@ class PostListAPI(API):
 		API.__init__(self, end_point="https://www.googleapis.com/blogger/v3/blogs/%s/posts?maxResult=500&key=%s")
 
 	def execute(self, args=None, blog=None, callback=None):
+		API.execute(self)
+		p_name      = multiprocessing.current_process().name
+		key_manager = KeyManager(holder=p_name)
 		try:
-			API.execute(self)
-
 			if args is not None:
 				blog, callback = args
 			assert blog     is not None, "blog is not defined."
 			assert "id"     in blog    , "id is not defined."
 			assert callback is not None, "callback is not defined."
 
-			print("[post_list_api][debug] Crawling: %s" % blog["id"])
+			print("[PostListAPI][execute][%s][debug] Crawling: %s" % (p_name, blog["id"]))
 			# Crawling posts
 			has_next 	= True
 			current_url = copy.copy(self.end_point)
 			while has_next:
 				try:
-					url = current_url % (blog["id"], Key.get_key())
+					url = current_url % (blog["id"], key_manager.selected_key)
 					res = requests.get(url)
 					res = res.json()
+					key_manager.count_as_used()
 
 					response_validator = ValidatorFactory.get_validator(ValidatorFactory.RESPONSE)
 					response_validator.validate(res)
@@ -42,20 +46,22 @@ class PostListAPI(API):
 					# If you need to retry, please do not go to next page
 					has_next = "nextPageToken" in res
 					if has_next:
-						# url = self.end_point % (blog["id"],Key.get_key())
 						token_url = "&pageToken=%s" % res["nextPageToken"]
 						current_url = "%s%s" % (current_url, token_url)
-						print("[post_list_api][debug] Going to %s next page items" % blog["id"])
+						print("[PostListAPI][execute][%s][debug] Going to %s next page items" % (p_name, blog["id"]))
 				except APIBackendError as ex:
-					print(fmtstr("[post_list_api][error] %s" % ex, "red"))
+					print(fmtstr("[PostListAPI][execute][%s][error] %s" % (p_name, ex), "red"))
 				except APIKeyLimitExceed as ex:
-					print(fmtstr("[post_list_api][error] %s" % ex, "red"))
+					print(fmtstr("[PostListAPI][execute][%s][error] %s" % (p_name, ex), "red"))
+					key_manager.next_key()
 				except CannotFindBlog as ex:
-					print(fmtstr("[post_list_api][error] %s" % ex, "red"))
+					print(fmtstr("[PostListAPI][execute][%s][error] %s" % (p_name, ex), "red"))
 		except pymongo.errors.DuplicateKeyError:
-			print(fmtstr("[post_list_api][error] Duplicate document!","red"))
+			print(fmtstr("[PostListAPI][execute][%s][error] Duplicate document!" % p_name,"red"))
 		except EmptyPost as ex:
-			print(fmtstr("[post_list_api][error] %s" % ex, "red"))
+			print(fmtstr("[PostListAPI][execute][%s][error] %s" % (p_name, ex), "red"))
+		except CannotFindAPIKey as ex:
+			print(fmtstr("[PostListAPI][execute][%s][error] %s" % (p_name, ex), "red"))
 
 	def generate_document(self, blog=None, item=None):
 		content  = BeautifulSoup(item["content"], "html5lib")

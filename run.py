@@ -9,6 +9,6 @@ if __name__ == "__main__":
 	blogs     = blog_data.get_active()
 	blogs     = [(blog, post_data.post_list_callback) for blog in blogs]
 
-	with Pool(5) as pool:
+	with Pool(10) as pool:
 		post_list = APIFactory.get_api(APIFactory.POST_LIST)
 		pool.map(post_list.execute, blogs)

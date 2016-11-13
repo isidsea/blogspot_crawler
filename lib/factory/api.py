@@ -4,7 +4,7 @@ from ..api.post_list  import PostListAPI
 class APIFactory:
 	GET_BY_URL = 0
 	POST_LIST  = 1
-
+	
 	def __init__(self):
 		pass
 
